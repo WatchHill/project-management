@@ -1,26 +1,18 @@
 import React from "react";
-import { Authenticator } from "@aws-amplify/ui-react";
-import { Amplify } from "aws-amplify";
-import "@aws-amplify/ui-react/styles.css";
+import { Auth } from "@supabase/auth-ui-react";
+import { createClient } from "@supabase/supabase-js";
+import { useEffect } from "react";
+import {
 
-Amplify.configure({
-  Auth: {
-    Cognito: {
-      userPoolId: process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID || "",
-      userPoolClientId:
-        process.env.NEXT_PUBLIC_COGNITO_USER_POOL_CLIENT_ID || "",
-    },
-  },
-});
+  ThemeSupa,
+} from '@supabase/auth-ui-shared'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://vwazgspsjbolkvxujtaz.supabase.co";
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3YXpnc3BzamJvbGt2eHVqdGF6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQxOTYxMDIsImV4cCI6MjA0OTc3MjEwMn0.qdYbkjLfLGsn_mPuR-eUJODCoV-Twc6q1IkEjdn49Vg";
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const formFields = {
   signUp: {
-    username: {
-      order: 1,
-      placeholder: "Choose a username",
-      label: "Username",
-      inputProps: { required: true },
-    },
     email: {
       order: 1,
       placeholder: "Enter your email address",
@@ -28,34 +20,30 @@ const formFields = {
       inputProps: { type: "email", required: true },
     },
     password: {
-      order: 3,
+      order: 2,
       placeholder: "Enter your password",
       label: "Password",
       inputProps: { type: "password", required: true },
     },
-    confirm_password: {
-      order: 4,
-      placeholder: "Confirm your password",
-      label: "Confirm Password",
-      inputProps: { type: "password", required: true },
-    },
+
   },
 };
 
 const AuthProvider = ({ children }: any) => {
+  useEffect(() => {
+
+  }, []);
+
   return (
     <div>
-      <Authenticator formFields={formFields}>
-        {({ user }: any) =>
-          user ? (
-            <div>{children}</div>
-          ) : (
-            <div>
-              <h1>Please sign in below:</h1>
-            </div>
-          )
-        }
-      </Authenticator>
+      <Auth
+        supabaseClient={supabase}
+        providers={['google', 'github']}
+         appearance={{ theme: ThemeSupa }}
+        theme="default"
+      />
+      {}
+      {children}
     </div>
   );
 };
